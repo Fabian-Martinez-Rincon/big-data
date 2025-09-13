@@ -1,4 +1,10 @@
-# big-data
+# Big Data
+
+---
+
+- [Practica 1](/practica_1_map_reduce/practica_1.ipynb)
+
+---
 
 Creamos el entorno
 ```
