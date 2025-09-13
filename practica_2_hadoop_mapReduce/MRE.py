@@ -302,6 +302,15 @@ class _Context:
     def write(this, k, v):
         if (this.__stage == 0):
             # map            
+            if not hasattr(this, "_map_log_count"):
+                this._map_log_count = 0
+
+            if this._map_log_count < 10:
+                print(f"[Map] {k} -> {v}")
+            elif this._map_log_count == 10:
+                print("... [más resultados de map omitidos]")
+
+            this._map_log_count += 1
             this.__interm = this.__addOrUpdateKey(this.__interm, k, v, this.__fShuffleCmp)
             
         elif (this.__stage == 3):
@@ -462,17 +471,33 @@ class Job:
     
     def __reduce(this, context):
         context.startReduce()
+        reduce_log_count = 0
         for (k,vs) in context:
+            if reduce_log_count < 10:
+                print(f"[Reduce] Clave recibida: {k}")
+            elif reduce_log_count == 10:
+                print("... [más reduce claves omitidas]")
+            reduce_log_count += 1
             this.__fReduce(k, vs, context)
         
     def waitForCompletion(this):
         context = _Context(this.__inputs, this.__interDir, this.__output, this.__fComb, this.__params, this.__fShuffleCmp, this.__fSortCmp)
+        print("[MRE] Iniciando etapa de mapeo...")
         this.__map(context)
         this.__shuffle(context)
         this.__sort(context)
+        print("[MRE] Iniciando etapa de reducción...")
         this.__reduce(context)
+        print("[MRE] Finalizando y escribiendo resultados en disco...")
         context.finish()
-        
+
+        print("\n[MRE] Resultados finales del Job:")
+        for i, (k, v) in enumerate(context._Context__result):
+            if i >= 10:
+                print("... [más resultados omitidos]")
+                break
+            print(f"{k}\t{v}")
+                
         return True
         
     def addInputPath(this, _input, fmap):
