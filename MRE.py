@@ -307,9 +307,9 @@ class _Context:
                 this._map_log_count = 0
 
             if this._map_log_count < 10:
-                print(f"[Map] {k} -> {v}")
+                print(f"\033[94m[Map]\033[0m {k} -> {v}")
             elif this._map_log_count == 10:
-                print("... [más resultados de map omitidos]")
+                print("\033[94m... [más resultados de map omitidos]\033[0m")
 
             this._map_log_count += 1
             this.__interm = this.__addOrUpdateKey(this.__interm, k, v, this.__fShuffleCmp)
@@ -431,7 +431,7 @@ class _Reduceterator:
             return (k, ValuesIterator(v))
     
 class Job:
-    def __init__(this, _input, output, fMap, fReduce):
+    def __init__(this, _input, output, fMap, fReduce, verbose=True):
         this.__inputs = [(_input, fMap)]
         this.__fReduce = fReduce
         this.__fComb = None
@@ -440,7 +440,9 @@ class Job:
         this.__fShuffleCmp = fDefaultCmp
         this.__fSortCmp = fDefaultCmp
         this.__interDir = None
-        
+        this.verbose    = verbose
+
+
     def setNumReducers(this, n):
         this.__numReducers = n
         
@@ -474,31 +476,32 @@ class Job:
         context.startReduce()
         reduce_log_count = 0
         for (k,vs) in context:
-            if reduce_log_count < 10:
-                print(f"[Reduce] Clave recibida: {k} -> {vs._ValuesIterator__values}")
-            elif reduce_log_count == 10:
-                print("... [más reduce claves omitidas]")
+            if this.verbose:
+                if reduce_log_count < 10:
+                    print(f"\033[96m[Reduce]\033[0m Clave recibida: {k} -> {vs._ValuesIterator__values}")
+                elif reduce_log_count == 10:
+                    print("\033[96m... [más reduce claves omitidas]\033[0m")
             reduce_log_count += 1
             this.__fReduce(k, vs, context)
         
-    def waitForCompletion(this, verbose=True):
+    def waitForCompletion(this):
         context = _Context(this.__inputs, this.__interDir, this.__output, this.__fComb, this.__params, this.__fShuffleCmp, this.__fSortCmp)
-        print("[MRE] Iniciando etapa de mapeo...")
+        print("\033[94m[MRE] INICIANDO ETAPA DE MAPEO...\033[0m")
         this.__map(context)
         this.__shuffle(context)
         this.__sort(context)
-        if verbose:
-            print("[MRE] Iniciando etapa de reducción...")
+        if this.verbose:
+            print("\033[96m[MRE] INICIANDO ETAPA DE REDUCCIÓN...\033[0m")
         this.__reduce(context)
-        print("[MRE] Finalizando y escribiendo resultados en disco...")
+        print("\033[93m[MRE] FINALIZANDO Y ESCRIBIENDO RESULTADOS EN DISCO...\033[0m")
         context.finish()
 
-        print("\n[MRE] Resultados finales del Job:")
+        print("\033[92m\n[MRE] RESULTADOS FINALES DEL JOB:\033[0m")
         for i, (k, v) in enumerate(context._Context__result):
             if i >= 10:
-                print("... [más resultados omitidos]")
+                print("\033[91m... [más resultados omitidos]\033[0m")
                 break
-            print(f"{k}\t{v}")
+            print(f"\033[95m{k}\033[0m\t{v}") 
                 
         return True
         
