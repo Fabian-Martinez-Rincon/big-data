@@ -477,12 +477,16 @@ class Job:
         reduce_log_count = 0
         for (k,vs) in context:
             if this.verbose:
+                values_preview = vs._ValuesIterator__values[:10]
+                if len(vs._ValuesIterator__values) > 10:
+                    values_preview = values_preview + ["..."]
                 if reduce_log_count < 10:
-                    print(f"\033[96m[Reduce]\033[0m Clave recibida: {k} -> {vs._ValuesIterator__values}")
+                    print(f"\033[96m[Reduce]\033[0m Clave recibida: {k} -> {values_preview}")
                 elif reduce_log_count == 10:
                     print("\033[96m... [más reduce claves omitidas]\033[0m")
             reduce_log_count += 1
             this.__fReduce(k, vs, context)
+
         
     def waitForCompletion(this):
         context = _Context(this.__inputs, this.__interDir, this.__output, this.__fComb, this.__params, this.__fShuffleCmp, this.__fSortCmp)
