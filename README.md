@@ -2,7 +2,7 @@
 
 ---
 
-- [Notas Clase 1](#notas-clase-1)
+- [Notas Clase 2](#notas-clase-2)
 - [Practica 1](/practica_1_map_reduce/practica_1.ipynb)
 - [Practica 2](/practica_2_hadoop_mapReduce/practica_2.ipynb)
 
