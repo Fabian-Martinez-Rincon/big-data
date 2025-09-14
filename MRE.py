@@ -472,6 +472,11 @@ class Job:
     def __sort(this, context):
         pass
     
+    def _truncate(this, text, length=80):
+        text = str(text)
+        return text if len(text) <= length else text[:length] + "..."
+
+
     def __reduce(this, context):
         context.startReduce()
         reduce_log_count = 0
