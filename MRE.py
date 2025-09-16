@@ -462,9 +462,12 @@ class Job:
         this.__fComb = fComb
         
     def __map(this, context):
+        input_log_count = 0
         for n in context:
             for (f, k, v) in n:
+                input_log_count += 1
                 f(k, v, context)
+
             
     def __shuffle(this, context):
         pass
