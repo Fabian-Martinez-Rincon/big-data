@@ -1,4 +1,10 @@
-# Big Data
+<div align="center">
+
+# 🗂️ Big Data
+
+<img src='https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGg2bnJxMG1oeXM2d2NyczkzcWZ3eXp4cHlnbzUwOGUwZTVhcnBhOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/aMwdfGSyeYjUKY6vjf/giphy.gif'>
+
+</div>
 
 ---
 
