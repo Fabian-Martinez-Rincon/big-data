@@ -36,16 +36,12 @@ Activamos el entorno
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; .\venv\Scripts\Activate
 ```
 
+Instalamos las dependencias
 ```
-pip install --upgrade pip
-pip install jupyterlab
+python -m venv venv
+.\venv\Scripts\Activate
+pip install -r requirements.txt
 ```
-
-```
-jupyter lab
-```
-
----
 
 ## Notas Clase 2
 
