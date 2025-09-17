@@ -9,12 +9,13 @@
 ---
 
 - [📕 Practica 1](practica_1.ipynb)
-- [📒 Notas Clase 2](#notas-clase-2)
 - [📕 Practica 2](practica_2.ipynb)
-- [📒 Notas Clase 3](#notas-clase-3)
 - [📕 Practica 3](practica_3.ipynb)
-- [📒 Notas Clase 4](#notas-clase-4)
 - [📕 Practica 4](practica_4.ipynb)
+- [📒 Notas Clase 2](#notas-clase-2)
+- [📒 Notas Clase 3](#notas-clase-3)
+- [📒 Notas Clase 4](#notas-clase-4)
+
 
 ---
 

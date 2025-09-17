@@ -1,5 +1,0 @@
-consonantes	38742
-digitos	152
-espacios	14286
-otros	3015
-vocales	29528

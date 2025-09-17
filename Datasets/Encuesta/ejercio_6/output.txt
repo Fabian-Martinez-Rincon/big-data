@@ -1,0 +1,66 @@
+ALGO SATISFECHO	8
+DISCONFORME	9
+MUY DISCONFORME	9
+MUY SATISFECHO	12
+POCO SATISFECHO	10
+aglo satisfecho	7
+ago satisfecho	7
+alg satisfecho	6
+algo astisfecho	6
+algo satifecho	10
+algo satisfceho	7
+algo satisfecho	1846
+algo satisfeco	15
+algo satisfeho	10
+algo satsfecho	18
+algo staisfecho	8
+algo stisfecho	10
+algos atisfecho	8
+diconforme	28
+dicsonforme	13
+discnforme	25
+disconfomre	22
+disconform	8
+disconforme	1864
+disconfrme	9
+disconfrome	22
+disconorme	13
+disonforme	10
+isconforme	5
+lgo satisfecho	7
+mu disconforme	19
+mu ydisconforme	21
+mu ysatisfecho	8
+muy discnforme	4
+muy disconfome	33
+muy disconfomre	4
+muy disconfore	7
+muy disconforem	6
+muy disconforme	1821
+muy disconofrme	13
+muy dsiconforme	11
+muy isconforme	25
+muy satisecho	14
+muy satisfech	14
+muy satisfecho	1832
+muy satisfeco	19
+muy satsfecho	7
+muy satsifecho	8
+muy staisfecho	10
+muy stisfecho	11
+muys atisfecho	8
+my satisfecho	21
+myu satisfecho	9
+opco satisfecho	7
+pcoo satisfecho	16
+poc satisfecho	21
+poco saisfecho	10
+poco satifecho	11
+poco satisefcho	6
+poco satisfceho	19
+poco satisfcho	11
+poco satisfecho	1812
+poco satisfeco	20
+poco satisfeho	6
+poco satsfecho	11
+poco stisfecho	5
