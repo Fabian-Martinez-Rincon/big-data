@@ -14,13 +14,15 @@
 - [📕 Practica 2](/Practicas_MapReduce/practica_2.ipynb)
 - [📕 Practica 3](/Practicas_MapReduce/practica_3.ipynb)
 - [📕 Practica 4](/Practicas_MapReduce/practica_4.ipynb)
-
-**Entregas**
-
-**Notas**
 - [📒 Notas Clase 2](#notas-clase-2)
 - [📒 Notas Clase 3](#notas-clase-3)
 - [📒 Notas Clase 4](#notas-clase-4)
+- [💻 Entrega](/Entrega%201/Entrega.ipynb)
+
+---
+
+**Spark**
+
 
 
 ---
@@ -189,3 +191,5 @@ La implementación de operaciones complejas en MapReduce requiere pensar en tér
 ### Reflexión Final
 
 - [ ]  Considerar si es posible implementar toda la consulta compleja presentada al final en un único job MapReduce
+
+---
