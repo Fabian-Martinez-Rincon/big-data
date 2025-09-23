@@ -10,10 +10,10 @@
 
 **Practicas MapReduce**
 
-- [📕 Practica 1](/Practicas_MapReduce/practica_1.ipynb)
-- [📕 Practica 2](/Practicas_MapReduce/practica_2.ipynb)
-- [📕 Practica 3](/Practicas_MapReduce/practica_3.ipynb)
-- [📕 Practica 4](/Practicas_MapReduce/practica_4.ipynb)
+- [📕 Practica 1 MapReduce](/Practicas_MapReduce/practica_1.ipynb)
+- [📕 Practica 2 Combiner](/Practicas_MapReduce/practica_2.ipynb)
+- [📕 Practica 3 Problemas Iterativos](/Practicas_MapReduce/practica_3.ipynb)
+- [📕 Practica 4 Problemas comunes con MapReduce](/Practicas_MapReduce/practica_4.ipynb)
 - [📒 Notas Clase 2](#notas-clase-2)
 - [📒 Notas Clase 3](#notas-clase-3)
 - [📒 Notas Clase 4](#notas-clase-4)
@@ -23,7 +23,7 @@
 
 **Spark**
 
-
+- [📕 Transformaciones y acciones basicas](/Practicas_Spark/)
 
 ---
 
@@ -40,8 +40,6 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; .\venv\Scripts\Activ
 
 Instalamos las dependencias
 ```
-python -m venv venv
-.\venv\Scripts\Activate
 pip install -r requirements.txt
 ```
 
