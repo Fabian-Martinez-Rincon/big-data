@@ -24,6 +24,7 @@
 **Spark**
 
 - [📕 Transformaciones y acciones basicas](/Practicas_Spark/)
+- [📒 Notas Clase 5](#notas-clase-5-spark)
 
 ---
 
@@ -191,3 +192,68 @@ La implementación de operaciones complejas en MapReduce requiere pensar en tér
 - [ ]  Considerar si es posible implementar toda la consulta compleja presentada al final en un único job MapReduce
 
 ---
+
+### Notas Clase 5 Spark
+
+#### Visión General de Spark
+
+Spark es un framework para procesamiento paralelo distribuido creado en 2009 en la Universidad de California como una tesis doctoral. Desde 2013 es open source y mantenido por la Fundación Apache. A diferencia de MapReduce, Spark permite tanto procesamiento por lotes (batch) como procesamiento de flujos de datos (streaming). Incluye MLlib para algoritmos de Machine Learning y es compatible con varios lenguajes, siendo Python el que se utilizará en este curso.
+
+#### Ventajas sobre MapReduce
+
+Spark fue diseñado para trabajar principalmente en memoria RAM, evitando las constantes operaciones de lectura/escritura a disco que ralentizan a MapReduce. Ofrece una API más simple que elimina la necesidad de pensar en términos de jobs, mappers y reducers. Aunque los benchmarks muestran mejor rendimiento, este depende de que los datos quepan en memoria; de lo contrario, Spark deberá cargar datos parcialmente.
+
+#### Arquitectura de Spark
+
+- **SparkCore**: núcleo que provee manejo de RDDs y API principal
+- **SparkSQL**: motor para traducir consultas SQL a la API de Spark
+- **Spark Streaming**: para procesamiento de flujos de datos
+- **MLlib**: biblioteca con algoritmos de Machine Learning
+- **GraphX**: para procesamiento de grafos
+
+Spark funciona con modelo Master-Slave, donde el proceso driver (master) envía operaciones a realizar sobre las RDDs distribuidas en los nodos workers (slaves).
+
+#### RDDs (Resilient Distributed Datasets)
+
+Son la abstracción fundamental de datos en Spark:
+
+- Distribuidos en particiones a través del clúster
+- Inmutables (no se modifican, sino que generan nuevas RDDs)
+- Permiten recuperación ante fallos
+- Se crean mediante lectura de fuentes de datos o paralelizando colecciones
+
+#### Operaciones sobre RDDs
+
+Se dividen en dos tipos:
+
+**Transformaciones** (devuelven nuevas RDDs):
+
+- **map**: transforma cada tupla, manteniendo el mismo número de elementos
+- **filter**: filtra tuplas según un criterio, reduciendo potencialmente su número
+- **union**: combina dos RDDs con la misma estructura
+- **distinct**: elimina duplicados
+
+**Acciones** (devuelven valores o realizan escrituras):
+
+- **count**: devuelve número de tuplas
+- **first**: devuelve primera tupla
+- **take/takeSample**: devuelve n tuplas específicas
+- **collect**: trae todo el contenido al driver
+- **saveAsTextFile**: guarda datos a disco
+- **reduce**: agrega datos por pares de tuplas
+
+#### Evaluación Perezosa (Lazy Evaluation)
+
+Spark no ejecuta transformaciones inmediatamente, sino que construye un grafo acíclico dirigido (DAG) de dependencias. Solo cuando se invoca una acción, Spark crea un plan de ejecución físico y distribuye las tareas a los nodos para ejecutar en paralelo. Esto optimiza el procesamiento al minimizar operaciones innecesarias.
+
+#### Ejemplo de Flujo de Trabajo
+
+1. Crear SparkContext
+2. Leer archivos para crear RDDs iniciales
+3. Aplicar transformaciones (map, filter, etc.)
+4. Ejecutar acciones para obtener resultados o guardarlos
+5. Las transformaciones construyen un DAG que solo se ejecuta al invocar una acción
+
+#### Manejo de Datos con Reduce
+
+La acción reduce opera por pares de tuplas, procesando primero cada partición en su nodo correspondiente, y luego combinando resultados. Esto minimiza la transferencia de datos entre nodos, pues cada nodo solo envía el resultado final de su reducción local.
