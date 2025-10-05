@@ -23,8 +23,9 @@
 
 **Spark**
 
-- [📕 Transformaciones y acciones basicas](/Practicas_Spark/)
+- [📕 Practica 5](/Practicas_Spark/practica1.ipynb)
 - [📒 Notas Clase 5](#notas-clase-5-spark)
+- [📕 Practica 6 (No esta terminada)](/Practicas_Spark/practica2.ipynb)
 - [📒 Notas Clase 6](#notas-clase-6-spark)
 
 ---
@@ -47,7 +48,7 @@ pip install -r requirements.txt
 
 ## Notas Clase 2
 
-### Repaso del Paradigma MapReduce
+#### Repaso del Paradigma MapReduce
 
 - MapReduce organiza el procesamiento en **jobs** como unidad mínima de trabajo
 - Cada job se divide en fases **map** y **reduce**
@@ -56,7 +57,7 @@ pip install -r requirements.txt
 - Los reducers reciben claves generadas por los mappers y todos los valores asociados a cada clave
 - El iterador de valores en la fase reduce solo puede recorrerse una vez y no se puede indexar
 
-### La Función Combiner para Optimización
+#### La Función Combiner para Optimización
 
 - El principal problema de MapReduce es el volumen de datos intermedios transferidos entre nodos
 - La función Combiner es una optimización que minimiza la cantidad de datos transferidos
@@ -66,14 +67,14 @@ pip install -r requirements.txt
 - La entrada y salida deben tener la misma estructura (K2V2)
 - En la mayoría de casos, la función Combiner es idéntica a la función Reduce
 
-### Beneficios del Combiner
+#### Beneficios del Combiner
 
 - Reduce significativamente el volumen de datos intermedios
 - Optimiza el uso de memoria RAM
 - Minimiza la transferencia de datos a través de la red del cluster
 - Ejemplo: En WordCount, si una palabra aparece 100 veces en un split, el Combiner reduce estos 100 pares a un solo par (palabra, 100)
 
-### Problemas Complejos
+#### Problemas Complejos
 
 - Algunos problemas requieren cálculos que no pueden resolverse en un solo job
 - Ejemplo: Calcular el desvío estándar de compras en un hipermercado
@@ -82,7 +83,7 @@ pip install -r requirements.txt
         1. Primer job para calcular el promedio
         2. Segundo job para calcular el desvío estándar usando el promedio
 
-### Próximo Tema
+#### Próximo Tema
 
 - En el segundo video se abordará cómo resolver problemas que requieren la ejecución de más de un job
 - También se tratarán casos donde es útil enviar información extra a los mappers y reducers
@@ -91,7 +92,7 @@ pip install -r requirements.txt
 
 ## Notas Clase 3
 
-### Conceptos Fundamentales
+#### Conceptos Fundamentales
 
 - Los problemas más complejos requieren ejecutar más de un job MapReduce
 - Los jobs se ejecutan secuencialmente (un job completo termina antes de iniciar el siguiente)
@@ -99,13 +100,13 @@ pip install -r requirements.txt
 - La salida de un job puede servir como entrada para otro job
 - Es posible parametrizar funciones Map y Reduce para enviarles información adicional
 
-### Problema del Desvío Estándar
+#### Problema del Desvío Estándar
 
 - Requiere calcular primero el promedio (Job 1) y luego usarlo para calcular el desvío (Job 2)
 - El dataset completo se utiliza dos veces en jobs diferentes
 - El promedio calculado en el primer job debe pasarse como parámetro al segundo job
 
-### Análisis de Logs Web
+#### Análisis de Logs Web
 
 - Dataset: ID de usuario, ID de página, tiempo de permanencia
 - Objetivo: encontrar para cada usuario la página donde pasó más tiempo
@@ -113,7 +114,7 @@ pip install -r requirements.txt
     - Job 1: Usa (idUsuario, idPágina) como clave intermedia para acumular tiempos
     - Job 2: Usa idUsuario como clave para encontrar la página con mayor tiempo acumulado
 
-### Algoritmos Iterativos
+#### Algoritmos Iterativos
 
 - Necesitan recorrer el dataset completo varias veces
 - Ejemplos: clustering, TF-IDF, PageRank, entrenamiento de redes neuronales
@@ -122,7 +123,7 @@ pip install -r requirements.txt
     - Cada iteración usa valores de la anterior
     - Termina cuando la diferencia entre iteraciones es menor que un umbral
 
-### Parametrización de Funciones
+#### Parametrización de Funciones
 
 - Permite pasar información adicional a Map y Reduce
 - Se configura desde el driver usando setParams()
@@ -131,7 +132,7 @@ pip install -r requirements.txt
     - Pasar valores de iteraciones anteriores (como en Jacobi)
     - Compartir configuraciones o datos calculados previamente
 
-### Implementación de Algoritmos Iterativos
+#### Implementación de Algoritmos Iterativos
 
 - Requiere un bucle (while) en el driver que controle las iteraciones
 - Cada iteración ejecuta un job completo
@@ -141,18 +142,18 @@ pip install -r requirements.txt
 
 ## Notas Clase 4
 
-### Concepto General
+#### Concepto General
 
 El paradigma MapReduce permite implementar operaciones similares a SQL (filtros, resúmenes, transformaciones y JOIN) en entornos de Big Data. En esta clase se utiliza el ejemplo de una base de datos bancaria con tres tablas (Cliente, Caja de Ahorro y Préstamo) almacenadas como archivos en directorios diferentes del HDFS.
 
-### Operaciones Básicas
+#### Operaciones Básicas
 
 - **GROUP BY (Agrupación)**: Similar a WordCount, donde la clave del Map es el campo de agrupación y el Reduce implementa la función de agregación.
 - **Filtros (WHERE)**: Se implementan en la fase Map para minimizar datos transferidos entre mappers y reducers.
 - **Proyecciones (SELECT)**: El Map emite solo los campos necesarios, funcionando como un filtro por columnas.
 - **DISTINCT**: Se implementa haciendo que el Reduce escriba solo una tupla para cada clave, ignorando duplicados.
 
-### Operación JOIN
+#### Operación JOIN
 
 - **Desafío principal**: Las tablas están en directorios diferentes del HDFS.
 - **Implementación**:
@@ -166,7 +167,7 @@ El paradigma MapReduce permite implementar operaciones similares a SQL (filtros,
     - Más complejo porque un cliente puede tener múltiples cajas de ahorro
     - Es necesario procesar primero los datos del cliente en el Reduce
 
-### Control de Orden en MapReduce
+#### Control de Orden en MapReduce
 
 - **Fases Shuffle y Sort**: Etapas intermedias entre Map y Reduce
     - **Shuffle**: Agrupa registros con la misma clave para el mismo Reducer
@@ -176,7 +177,7 @@ El paradigma MapReduce permite implementar operaciones similares a SQL (filtros,
     - Comparador Sort: Define el orden en que las claves llegan al Reducer
     - Permiten controlar el orden de procesamiento en joins complejos
 
-### Optimización de Consultas Complejas
+#### Optimización de Consultas Complejas
 
 - Estrategia de optimización:
     1. Descomponer la consulta en operaciones simples (filtros, joins, agrupaciones)
@@ -184,17 +185,17 @@ El paradigma MapReduce permite implementar operaciones similares a SQL (filtros,
     3. Optimizar combinando múltiples operaciones en menos jobs
     4. Minimizar lecturas/escrituras de datos entre jobs
 
-### Conclusión
+#### Conclusión
 
 La implementación de operaciones complejas en MapReduce requiere pensar en términos de Map y Reduce, personalizar el comportamiento de Shuffle y Sort, y optimizar el flujo de datos para minimizar operaciones de E/S. La próxima clase abordará el framework Spark.
 
-### Reflexión Final
+#### Reflexión Final
 
 - [ ]  Considerar si es posible implementar toda la consulta compleja presentada al final en un único job MapReduce
 
 ---
 
-### Notas Clase 5 Spark
+## Notas Clase 5 Spark
 
 #### Visión General de Spark
 
@@ -261,7 +262,7 @@ La acción reduce opera por pares de tuplas, procesando primero cada partición 
 
 ---
 
-### Notas Clase 6 Spark
+## Notas Clase 6 Spark
 
 #### Introducción
 
