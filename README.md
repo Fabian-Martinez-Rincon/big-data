@@ -25,6 +25,7 @@
 
 - [📕 Transformaciones y acciones basicas](/Practicas_Spark/)
 - [📒 Notas Clase 5](#notas-clase-5-spark)
+- [📒 Notas Clase 6](#notas-clase-6-spark)
 
 ---
 
@@ -257,3 +258,86 @@ Spark no ejecuta transformaciones inmediatamente, sino que construye un grafo ac
 #### Manejo de Datos con Reduce
 
 La acción reduce opera por pares de tuplas, procesando primero cada partición en su nodo correspondiente, y luego combinando resultados. Esto minimiza la transferencia de datos entre nodos, pues cada nodo solo envía el resultado final de su reducción local.
+
+---
+
+### Notas Clase 6 Spark
+
+#### Introducción
+
+- Este video continúa con el estudio de Apache Spark, explorando funciones avanzadas de su API.
+- Se cubren conceptos de persistencia de RDDs, nuevas transformaciones y acciones, y el funcionamiento interno de Spark.
+- El objetivo es entender cómo optimizar la ejecución de trabajos en Spark.
+
+#### Persistencia de RDDs
+
+- Cuando se ejecuta una acción, Spark libera las RDDs intermedias para optimizar memoria.
+- Si necesitamos aplicar múltiples acciones sobre una misma RDD, conviene persistirla con `persist()`.
+- Se puede configurar la persistencia en:
+    - Memoria (`MEMORY_ONLY`)
+    - Disco (`DISK_ONLY`)
+    - Combinaciones híbridas
+    - Con o sin replicación
+
+#### Acción Aggregate
+
+- Permite reducir/resumir una RDD cambiando la estructura de datos (a diferencia de `reduce`).
+- Requiere tres parámetros:
+    - Valor inicial (zeroValue)
+    - Función para combinar elementos dentro de una partición
+    - Función para combinar resultados entre particiones
+- Optimiza operaciones como calcular máximo, mínimo y promedio en una sola pasada.
+
+#### Pair RDDs (RDDs Pareadas)
+
+- RDDs con estructura clave-valor (dos campos).
+- Se pueden crear transformando cualquier RDD mediante `map`.
+- El primer campo actúa como clave y el segundo como valor (puede contener múltiples valores en una tupla).
+- Permiten operaciones específicas por clave.
+
+#### Transformaciones por Clave
+
+- `reduceByKey`: Reduce valores agrupados por clave.
+- `aggregateByKey`: Similar a aggregate pero agrupando por clave.
+- `groupByKey`: Asocia todos los valores con la misma clave (costoso en transferencia de datos).
+- `sortByKey`: Ordena por claves.
+- `mapValues`: Aplica transformación solo a los valores sin modificar las claves.
+- `countByKey`: Acción que cuenta tuplas por clave.
+
+#### Operaciones de Join
+
+- `join`: Actúa como inner join entre dos RDDs pareadas.
+- `cogroup`: Agrupa todos los valores de ambas RDDs por clave.
+- También disponibles: `leftOuterJoin`, `rightOuterJoin` y `cartesian`.
+- Todas son operaciones costosas que requieren transferencia de datos.
+
+#### Funcionamiento Interno de Spark
+
+- Dos tipos de transformaciones:
+    - **Transformaciones estrechas (narrow)**: Se ejecutan en una misma partición (ej: `map`, `filter`).
+    - **Transformaciones amplias (wide)**: Requieren transferencia de datos entre nodos (ej: `join`, `groupByKey`).
+- El DAG Scheduler organiza el trabajo en etapas separadas por transformaciones wide.
+- Las etapas independientes se pueden ejecutar en paralelo.
+
+#### Optimización de Trabajos
+
+- Maximizar transformaciones narrow consecutivas.
+- Minimizar transformaciones wide.
+- Utilizar coparticionado de RDDs para optimizar operaciones como join.
+- La transformación `partitionBy` permite indicar cómo distribuir las claves en particiones.
+- Persistir RDDs después de particionarlas para evitar recomputación.
+- `repartition` y `coalesce` permiten modificar el número de particiones.
+
+#### FlatMap y WordCount
+
+- `flatMap`: Permite generar múltiples tuplas de salida por cada tupla de entrada.
+- Ejemplo clásico WordCount en Spark:
+    - Leer archivos de texto
+    - Usar `flatMap` para separar las líneas en palabras individuales
+    - Usar `map` para asignar contador inicial (1) a cada palabra
+    - Usar `reduceByKey` para sumar contadores y obtener frecuencias
+
+#### Sintaxis Alternativa
+
+- Python permite encadenar transformaciones usando continuación de línea (`\`).
+- Mejora la legibilidad al mostrar claramente la secuencia de operaciones.
