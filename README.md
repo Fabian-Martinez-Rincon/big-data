@@ -27,6 +27,7 @@
 - [📒 Notas Clase 5](#notas-clase-5-spark)
 - [📕 Practica 6 (No esta terminada)](/Practicas_Spark/practica2.ipynb)
 - [📒 Notas Clase 6](#notas-clase-6-spark)
+- [📒 Notas Clase 7](#notas-clase-7-spark)
 
 ---
 
@@ -342,3 +343,84 @@ La acción reduce opera por pares de tuplas, procesando primero cada partición 
 
 - Python permite encadenar transformaciones usando continuación de línea (`\`).
 - Mejora la legibilidad al mostrar claramente la secuencia de operaciones.
+
+---
+
+## Notas Clase 7 Spark
+
+#### Introducción
+
+- Este video continúa la formación en Apache Spark, enfocándose en herramientas y conceptos avanzados.
+- Se cubren acumuladores, variables broadcast, la función parallelize, algoritmos iterativos y transformaciones adicionales.
+- El enfoque principal está en cómo implementar soluciones optimizadas para procesamiento distribuido.
+
+#### Acumuladores
+
+- Permiten contabilizar valores a través de todos los nodos de un clúster.
+- Solucionan un problema fundamental: las variables globales normales se copian a cada worker pero los cambios no regresan al driver.
+- Los acumuladores son variables de "sólo escritura" durante las transformaciones.
+- Para que el valor acumulado regrese al driver, es necesario ejecutar una acción (como count()).
+- Ejemplo de uso: contar errores en tuplas durante un procesamiento sin detener la ejecución.
+- Se crean mediante `sc.accumulator(valorInicial)` y se accede al valor final con `.value`.
+
+#### Variables Broadcast
+
+- Son variables de "sólo lectura" que se comparten con todos los workers.
+- A diferencia de variables globales normales, garantizan que todos los workers reciban el mismo valor.
+- Pueden contener cualquier estructura de datos (números, strings, listas, diccionarios).
+- Se accede a su valor mediante la propiedad `.value`.
+- Son "lazy" - toman su valor en el momento de ejecución del DAG, no cuando se declaran.
+- Se crean con `sc.broadcast(valor)`.
+- Ejemplo: compartir una lista de países válidos para validación de datos.
+
+#### La Función Parallelize
+
+- Permite crear RDDs directamente desde colecciones de datos en el driver.
+- A diferencia de las transformaciones, parallelize se ejecuta inmediatamente.
+- Útil para:
+    - Crear pequeñas tablas de referencia
+    - Realizar pruebas sin conectarse a fuentes de datos externas
+    - Implementar algoritmos iterativos
+- Se puede especificar el número de particiones para la RDD resultante.
+- Ejemplo: `sc.parallelize([1, 2, 3, 4, 5], numPartitions=4)`
+
+#### Algoritmos Iterativos en Spark
+
+- Requieren cuidado especial para funcionar correctamente en entornos distribuidos.
+- Con bucles for:
+    - Se pueden crear cadenas de transformaciones o ramas separadas dependiendo de cómo se manejen las referencias a RDDs.
+    - Si se crea una nueva referencia en cada iteración, se generan ramas paralelas.
+    - Si se reutiliza la misma referencia, se crea una cadena lineal de transformaciones.
+- Con bucles while:
+    - Similar al for, pero con número variable de iteraciones basado en una condición.
+    - Requiere ejecutar acciones dentro del bucle para evaluar la condición.
+- Consideraciones con variables broadcast:
+    - Al usar broadcast en bucles, su valor se determina en el momento de ejecución.
+    - Para garantizar valores correctos, es necesario forzar la ejecución dentro del bucle.
+
+#### Transformaciones Adicionales
+
+- **mapPartitions**:
+    - Trabaja con todas las tuplas de una partición a la vez.
+    - Recibe un iterador que permite recorrer todas las tuplas de la partición.
+    - Más eficiente cuando se necesita acceder a recursos externos (bases de datos, servicios web).
+    - Ejemplo: calcular promedio por partición.
+- **zip**:
+    - Une tuplas de dos RDDs en orden posicional (primera con primera, segunda con segunda, etc.).
+    - Requiere que ambas RDDs tengan el mismo número de particiones y elementos.
+    - Mucho más rápido que join cuando el orden es relevante.
+    - Útil cuando se aplican diferentes transformaciones a la misma RDD original.
+- **zipWithIndex**:
+    - Añade un índice secuencial a cada elemento de una RDD.
+- **zipWithUniqueID**:
+    - Añade un ID único (no secuencial) a cada elemento.
+    - Más eficiente que zipWithIndex para RDDs grandes.
+
+#### Consideraciones Importantes
+
+- La elección entre diferentes patrones depende del problema específico a resolver.
+- Para algoritmos iterativos, considerar:
+    - Persistencia de RDDs para evitar recálculos.
+    - Cuándo forzar la ejecución del grafo (DAG).
+    - Manejo adecuado de variables broadcast y acumuladores.
+- Comprender el comportamiento lazy vs. eager de diferentes operaciones es fundamental para el rendimiento.
