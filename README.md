@@ -24,7 +24,7 @@
 **Spark**
 
 - [📕 Practica 5](/Practicas_Spark/practica1.ipynb)
-- [📕 Practica 6 (No esta terminada)](/Practicas_Spark/practica2.ipynb)
+- [📕 Practica 6](/Practicas_Spark/practica2.ipynb)
 - [📒 Notas Clase 5](#notas-clase-5-spark)
 - [📒 Notas Clase 6](#notas-clase-6-spark)
 - [📒 Notas Clase 7](#notas-clase-7-spark)
