@@ -1,31 +1,20 @@
 import sys, os
 sys.path.append("..")
-from MRE import Job, InputKeyValueSeparator
-
-# ==============================
-# CONFIGURACIÓN MRE
-# ==============================
-# Tu dataset usa espacios, no tabulaciones
-InputKeyValueSeparator = " "
+from MRE import Job
 
 # ==============================
 # RUTAS DE ENTRADA / SALIDA
 # ==============================
 BASE_DIR = os.path.join(os.getcwd(), "Datasets", "TP1")
 
-# Ajustá esta ruta si tu archivo está dentro de "input/data"
 input_path  = os.path.join(BASE_DIR, "input")
 job1_out    = os.path.join(BASE_DIR, "out_filtrar")
 job2_out    = os.path.join(BASE_DIR, "out_pp")
 job3_out    = os.path.join(BASE_DIR, "out_ph")
 
-# Crear carpetas si no existen
 for path in [input_path, job1_out, job2_out, job3_out]:
     os.makedirs(path, exist_ok=True)
 
-# ==============================
-# JOB 1: LECTURA Y FILTRADO
-# ==============================
 def fmap_filtrar(key, value, context):
     try:
         parts = value.strip().split()
@@ -42,9 +31,6 @@ def fred_filtrar(key, values, context):
     for v in values:
         context.write(key, v)
 
-# ==============================
-# JOB 2: PROMEDIO DE PUNTAJE (PP)
-# ==============================
 def fmap_pp(key, value, context):
     try:
         if isinstance(value, tuple):
@@ -69,33 +55,26 @@ def fred_pp(key, values, context):
 import re
 
 def fmap_ph(retador, value, context):
-    try:
-        parts = re.split(r'[\t\s]+', value.strip())
-        if len(parts) != 3:
-            print(f"[WARN][JOB3] Línea inválida: {value.strip()}")
-            return
+    parts = re.split(r'[\t\s]+', value.strip())
+    if len(parts) != 3:
+        print(f"[WARN][JOB3] Línea inválida: {value.strip()}")
+        return
 
-        retado, puntos, tiempo = map(float, parts)
-        retador = int(retador)
-        retado = int(retado)
+    retado, puntos, tiempo = map(float, parts)
+    retador = int(retador)
+    retado = int(retado)
 
-        pp = context["pp"]
-        ph_prev = context["ph_prev"]
-        alpha = context["alpha"]
+    pp = context["pp"]
+    ph_prev = context["ph_prev"]
+    alpha = context["alpha"]
 
-        # Validaciones
-        if retador not in pp or retado not in pp or retado not in ph_prev:
-            return
-        if pp[retado] == 0:
-            return
+    if retador not in pp or retado not in pp or retado not in ph_prev:
+        return
+    if pp[retado] == 0:
+        return
 
-        contrib = ph_prev[retado] * (pp[retador] / pp[retado])
-        context.write(retador, contrib)
-
-    except Exception as e:
-        print(f"[ERROR][JOB3] {value.strip()} ({e})")
-
-
+    contrib = ph_prev[retado] * (pp[retador] / pp[retado])
+    context.write(retador, contrib)
 
 def fred_ph(jugador, values, context):
     vals = list(values)
@@ -105,14 +84,11 @@ def fred_ph(jugador, values, context):
 
     total = sum(vals)
     alpha = context["alpha"]
-    nuevo_ph = alpha * total + (1 - alpha)  # fórmula original
+    nuevo_ph = alpha * total + (1 - alpha)
 
     context.write(jugador, nuevo_ph)
 
 
-# ==============================
-# AUXILIARES
-# ==============================
 def leer_resultados(path):
     res = {}
     try:
@@ -143,33 +119,23 @@ def guardar_top10(top10, path):
         for j, p in top10:
             f.write(f"{j}\t{p:.2f}\n")
 
-# ==============================
-# MAIN
-# ==============================
 if __name__ == "__main__":
     print(f"\n[DEBUG] Archivos en {input_path}: {os.listdir(input_path)}")
 
     print("\n========== INICIANDO JOB 1: FILTRADO ==========")
     job1 = Job(input_path, job1_out, fmap_filtrar, fred_filtrar)
     job1.waitForCompletion()
-    print("[OK] Job 1 completado ✅")
+    print("[OK] Job 1 completado")
 
     print("\n========== INICIANDO JOB 2: PROMEDIO DE PUNTAJES ==========")
     job2 = Job(job1_out, job2_out, fmap_pp, fred_pp)
     job2.waitForCompletion()
     pp = leer_resultados(job2_out)
-    # === Escalamos los PP para mantener la misma magnitud que el cálculo secuencial ===
-    if pp:
-        max_pp = max(pp.values())
-        # escala = 1000 / max_pp
-        # pp = {k: v * escala for k, v in pp.items()}
-        # print(f"[DEBUG] PP escalados con factor {escala:.4f}")
+    max_pp = max(pp.values())
 
-    print(f"[OK] Job 2 completado ✅ | Jugadores con PP calculado: {len(pp)}")
+    print(f"[OK] Job 2 completado | Jugadores con PP calculado: {len(pp)}")
 
     print("\n========== INICIANDO JOB 3: PUNTAJE HEROICO ==========")
-
-    # --- Corrección 3: incluir todos los jugadores (retadores + retados)
     jugadores = set(pp.keys())
     with open(os.path.join(input_path, "jugadores.txt"), "r", encoding="utf-8") as f:
         for linea in f:
@@ -200,16 +166,12 @@ if __name__ == "__main__":
 
         ph = nuevo_ph
         if dif < error:
-            print(f"[INFO] ✅ Convergencia alcanzada en {i+1} iteraciones.")
+            print(f"[INFO] Convergencia alcanzada en {i+1} iteraciones.")
             break
 
-    # === RESULTADOS ===
-    if not ph:
-        print("⚠️ No se calcularon puntajes heroicos.")
-    else:
-        print("\n========== TOP 10 FINAL ==========")
-        top10 = sorted(ph.items(), key=lambda x: x[1], reverse=True)[:10]
-        for j, p in top10:
-            print(f"(Jugador = {j}, PH = {p:.2f})")
-        guardar_top10(top10, job3_out)
-        print(f"[OK] Resultados guardados en: {job3_out}")
+    print("\n========== TOP 10 FINAL ==========")
+    top10 = sorted(ph.items(), key=lambda x: x[1], reverse=True)[:10]
+    for j, p in top10:
+        print(f"(Jugador = {j}, PH = {p:.2f})")
+    guardar_top10(top10, job3_out)
+    print(f"[OK] Resultados guardados en: {job3_out}")
